@@ -1,10 +1,11 @@
-import { HomePageHeader } from "@/components/home/HomePageHeader";
-import { HomePageAction } from "@/components/home/HomePageAction";
+"use client";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+const HomePage = dynamic(() => import("@/pages/home"), { ssr: false });
 export default function AppPage() {
     return (
-        <div>
-            <HomePageHeader />
-            <HomePageAction />
-        </div>
+        <Suspense>
+            <HomePage />
+        </Suspense>
     );
 }
