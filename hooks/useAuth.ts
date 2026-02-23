@@ -1,10 +1,43 @@
-export const useAuth = () => {
-    return {
-        isAuthenticated: true,
-        user: {
-            name: "John Doe",
-            email: "john.doe@example.com",
-            avatar: "https://via.placeholder.com/150",
-        },
-    }
+import { useQuery } from "@tanstack/react-query";
+import { authService } from "@/services/auth.service";
+import { TokenStorage } from "@/libs/ultils/tokenStorage";
+
+export interface AuthUser {
+    email: string;
 }
+
+export const useAuth = () => {
+    const hasToken =
+        typeof window !== "undefined" &&
+        !!TokenStorage.getAccessToken() &&
+        !!TokenStorage.getRefreshToken();
+
+    const {
+        data: user,
+        isLoading,
+        isError,
+        refetch,
+    } = useQuery<AuthUser | null>({
+        queryKey: ["auth", "me"],
+        queryFn: async () => {
+            try {
+                const me = await authService.getProfile<AuthUser>();
+                return me;
+            } catch {
+                return null;
+            }
+        },
+        enabled: hasToken,
+        staleTime: 5 * 60 * 1000,
+    });
+
+    const isAuthenticated = !!user && !isError;
+
+    return {
+        user,
+        isAuthenticated,
+        isLoading,
+        isError,
+        refetch,
+    };
+};

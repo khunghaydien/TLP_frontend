@@ -35,7 +35,7 @@ export const CreateNewGroup = () => {
         onCancel={handleCancel}
         okText="Create"
         cancelText="Cancel"
-        destroyOnClose
+        destroyOnHidden
       >
         <Form form={form} layout="vertical">
           <Form.Item

@@ -1,22 +1,12 @@
 "use client";
 import { useAuth } from "@/hooks/useAuth";
-import { Avatar, Dropdown, Space } from "antd";
+import { Dropdown, Space } from "antd";
 import { LogoutOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
-
+import { authService } from "@/services/auth.service";
+import { useRouter } from "next/navigation";
 export const ProfileDropdown = () => {
-    const { isAuthenticated, user } = useAuth();
-    if (!isAuthenticated) {
-        return null;
-    }
-    const logout = () => {
-        console.log("logout");
-    }
-    const settings = () => {
-        console.log("settings");
-    }
-    const profile = () => {
-        console.log("profile");
-    }
+    const { user } = useAuth();
+    const router = useRouter();
     return (
         <Dropdown
             trigger={["click"]}
@@ -33,7 +23,7 @@ export const ProfileDropdown = () => {
                         label: "Profile",
                         icon: <UserOutlined />,
                         onClick: () => {
-                            profile();
+                            router.push("/profile");
                         }
                     },
                     {
@@ -41,7 +31,7 @@ export const ProfileDropdown = () => {
                         label: "Settings",
                         icon: <SettingOutlined />,
                         onClick: () => {
-                            settings();
+                            router.push("/settings");
                         }
                     },
                     {
@@ -54,15 +44,14 @@ export const ProfileDropdown = () => {
                         danger: true,
                         icon: <LogoutOutlined />,
                         onClick: () => {
-                            logout();
+                            authService.logout();
                         }
                     },
 
                 ]
             }}>
             <Space align="center" size={16}>
-                <Avatar src={user.avatar} />
-                <span>{user.name}</span>
+                <span>{user?.email}</span>
             </Space>
         </Dropdown>
     )
